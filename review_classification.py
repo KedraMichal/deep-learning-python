@@ -29,7 +29,27 @@ def decode_opinion(opinion, coding):
 
     return " ".join(decoded)
 
+print(test_data)
+def find_longest(lists):
+    for i in lists:
+        print(len(i))
 
 
+find_longest(test_data)
 reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 print(decode_opinion(test_data[0], reversed_wd))
+
+
+model = keras.Sequential()
+model.add(keras.layers.Embedding(10000, 16))
+model.add(keras.layers.GlobalAveragePooling1D())
+model.add(keras.layers.Dense(16, activation="relu"))
+model.add(keras.layers.Dense(1, activation="softmax"))
+
+model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+
+
+model.fit(train_data, train_labels, epochs=4)
+
+results = model.evaluate(train_data, train_labels)
+print(results)
