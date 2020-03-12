@@ -7,8 +7,6 @@ data = keras.datasets.imdb
 
 (train_data, train_labels), (test_data, test_labels) = data.load_data(num_words=10000)
 
-print(train_data[0])
-print(train_labels[0])
 
 word_index = data.get_word_index()
 
@@ -29,14 +27,19 @@ def decode_opinion(opinion, coding):
 
     return " ".join(decoded)
 
-print(test_data)
-def find_longest(lists):
+
+def reviev_stats(lists):
+    words_used = np.array([])
     for i in lists:
-        print(len(i))
+        words_used = np.append(words_used, len(i))
+
+    return np.min(words_used), np.max(words_used), np.mean(words_used)
+
+print(reviev_stats(test_data))
+test_data = keras.preprocessing.sequence.pad_sequences(test_data, value=0, maxlen= 200, padding="post")
+train_data = keras.preprocessing.sequence.pad_sequences(train_data, value=0, maxlen= 200, padding="post")
 
 
-find_longest(test_data)
-reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 print(decode_opinion(test_data[0], reversed_wd))
 
 
