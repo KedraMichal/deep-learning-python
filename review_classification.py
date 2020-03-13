@@ -4,9 +4,11 @@ import numpy as np
 
 
 data = keras.datasets.imdb
+np.set_printoptions(suppress=True)
 
 (train_data, train_labels), (test_data, test_labels) = data.load_data(num_words=10000)
-
+print(train_data.shape)
+print(test_data.shape)
 
 word_index = data.get_word_index()
 
@@ -35,10 +37,10 @@ def reviev_stats(lists):
 
     return np.min(words_used), np.max(words_used), np.mean(words_used)
 
+
 print(reviev_stats(test_data))
 test_data = keras.preprocessing.sequence.pad_sequences(test_data, value=0, maxlen= 200, padding="post")
 train_data = keras.preprocessing.sequence.pad_sequences(train_data, value=0, maxlen= 200, padding="post")
-
 
 print(decode_opinion(test_data[0], reversed_wd))
 
@@ -47,12 +49,17 @@ model = keras.Sequential()
 model.add(keras.layers.Embedding(10000, 16))
 model.add(keras.layers.GlobalAveragePooling1D())
 model.add(keras.layers.Dense(16, activation="relu"))
-model.add(keras.layers.Dense(1, activation="softmax"))
+model.add(keras.layers.Dense(1, activation="sigmoid"))
 
 model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
+model.fit(train_data, train_labels, epochs=1, verbose=1)
 
-model.fit(train_data, train_labels, epochs=4)
-
-results = model.evaluate(train_data, train_labels)
+results = model.evaluate(test_data, test_labels)
 print(results)
+
+
+for i in range(3):
+    predict = model.predict(test_data)
+    print(predict[i])
+    print(decode_opinion(test_data[i], reversed_wd))
