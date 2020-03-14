@@ -44,22 +44,29 @@ train_data = keras.preprocessing.sequence.pad_sequences(train_data, value=0, max
 
 print(decode_opinion(test_data[0], reversed_wd))
 
+if keras.models.load_model("model.txt") is None:
+    model = keras.Sequential()
+    model.add(keras.layers.Embedding(10000, 16))
+    model.add(keras.layers.GlobalAveragePooling1D())
+    model.add(keras.layers.Dense(16, activation="relu"))
+    model.add(keras.layers.Dense(1, activation="sigmoid"))
 
-model = keras.Sequential()
-model.add(keras.layers.Embedding(10000, 16))
-model.add(keras.layers.GlobalAveragePooling1D())
-model.add(keras.layers.Dense(16, activation="relu"))
-model.add(keras.layers.Dense(1, activation="sigmoid"))
+    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
 
-model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+    model.fit(train_data, train_labels, epochs=10)
 
-model.fit(train_data, train_labels, epochs=1, verbose=1)
+    model.save("model.txt")
+
+model = keras.models.load_model("model.txt")
 
 results = model.evaluate(test_data, test_labels)
 print(results)
 
 
-for i in range(3):
+for i in range(10):
     predict = model.predict(test_data)
     print(predict[i])
     print(decode_opinion(test_data[i], reversed_wd))
+
+
+
