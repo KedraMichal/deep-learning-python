@@ -80,23 +80,25 @@ carnage. And the music! Wow. I cried for all of this. And especially right at th
 is life, knowing she is fulfilled her promise and survived, living a full life, probably never having met anyone she 
 loved as much as Jack."""
 
-titanic_review = titanic_review.replace("\n", "").replace(".", "").replace(",","")
-titanic_review = titanic_review.split(" ")
 
-print(titanic_review)
-titanic_review = [i.lower() for i in titanic_review]
+def encode_review(review):
+    review = review.replace("\n", "").replace(".", "").replace(",", "")
+    review = review.split(" ")
 
-print(titanic_review)
-encoded_sent = []
-encoded_sent.append(1)
-for i in titanic_review:
-    if i in word_index:
-        encoded_sent.append(word_index[i])
-    else:
-        encoded_sent.append(0)  # unknown words
+    review = [i.lower() for i in review]
 
-encoded_sent = encoded_sent[:200]
+    encoded_sent = [1]
+    for i in review:
+        if i in word_index:
+            encoded_sent.append(word_index[i])
+        else:
+            encoded_sent.append(2)  # unknown words
 
-encoded_sent = np.asarray(encoded_sent)
+    encoded_sent = np.array([encoded_sent])
+    encoded_sent = keras.preprocessing.sequence.pad_sequences(encoded_sent, value=0, maxlen=200, padding="post")
 
-print(model.predict(encoded_sent))
+    return encoded_sent
+
+
+titanic_predict = model.predict(encode_review(titanic_review))
+print(titanic_predict)
