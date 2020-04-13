@@ -24,7 +24,7 @@ data = data.to_numpy()
 x = data[:, 0:6]
 y = data[:, 7]
 
-x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.2, random_state=1)
+x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, test_size=0.2, random_state=0)
 
 pipe = Pipeline([('scaler', StandardScaler()), ('knn', KNeighborsClassifier())])
 parameters = {'knn__n_neighbors': [x for x in range(1, 20)]}
@@ -34,10 +34,10 @@ print(grid.best_params_)
 
 knn = KNeighborsClassifier(n_neighbors=7)
 knn.fit(x_train, y_train)
-acc = knn.score(x_test, y_test)
-print(acc)
+acc_knn = knn.score(x_test, y_test)
 
 
+# ### hyperparameters optimization
 # def create_model():
 #     model = keras.Sequential()
 #     model.add(keras.layers.Dense(8, activation='relu'))
@@ -49,12 +49,12 @@ print(acc)
 # model = KerasClassifier(build_fn=create_model, verbose=0)
 #
 # batch_size = [10, 20, 40, 60, 80, 100]
-# epochs = [100, 200, 500, 1000]
+# epochs = [100, 200, 500, 750, 1000]
 # param_grid = dict(batch_size=batch_size, epochs=epochs)
 # grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=-1, cv=10)
 # grid_result = grid.fit(x, y)
 #
-# # summary
+# ### stats for specified hyperparameters
 # print("Best: {} using {}" .format(grid_result.best_score_, grid_result.best_params_))
 # means = grid_result.cv_results_['mean_test_score']
 # stds = grid_result.cv_results_['std_test_score']
@@ -63,6 +63,7 @@ print(acc)
 #     print("{} ({}) with: {}" .format(mean, stdev, param))
 
 
+### model with choosen hyperparameters
 model = keras.Sequential()
 model.add(keras.layers.Dense(8))
 model.add(keras.layers.Dense(8, activation='relu'))
@@ -70,9 +71,10 @@ model.add(keras.layers.Dense(1, activation='sigmoid'))
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=500, batch_size=20, verbose=0)
+model.fit(x_train, y_train, epochs=750, batch_size=20)
 acc = model.evaluate(x_test, y_test)
 
-print(acc)
+print("KNN accuracy: {}".format(acc_knn))
+print("Dl accuracy: {}".format(acc))
 
 
