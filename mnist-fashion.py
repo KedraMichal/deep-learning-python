@@ -17,10 +17,10 @@ train_img = tf.keras.utils.normalize(train_img, axis=1)
 test_img = tf.keras.utils.normalize(test_img, axis =1)
 
 
-model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation="relu"), # add a non-linear property to the neural network. In this way, the network can model more complex relationships and patterns in the data.
-    tf.keras.layers.Dense(len(class_names), activation="softmax")]) # output neurons  take values between zero and one, so they can represent probability scores.
+model = tf.keras.Sequential()
+model.add(tf.keras.layers.Flatten())
+model.add(tf.keras.layers.Dense(128, activation="relu")) # add a non-linear property to the neural network. In this way, the network can model more complex relationships and patterns in the data.
+model.add(tf.keras.layers.Dense(len(class_names), activation="softmax")) # output neurons  take values between zero and one, so they can represent probability scores.
 
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
@@ -38,3 +38,4 @@ for i in range(5):
     plt.title("Actual: " + str(class_names[test_labels[i]]))
     plt.suptitle("Predicition: "+ class_names[np.argmax(prediction[i])])
     plt.show()
+
