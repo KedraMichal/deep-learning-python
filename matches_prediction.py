@@ -4,6 +4,9 @@ import sklearn
 from sklearn import model_selection
 import tensorflow
 import keras
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from keras.wrappers.scikit_learn import KerasClassifier
 
 np.set_printoptions(suppress=True)
 
@@ -28,8 +31,13 @@ model.add(keras.layers.Dense(3, activation="softmax"))
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=1000, batch_size=20)
+model.fit(x_train, y_train, epochs=2000)
 
 acc = model.evaluate(x_test, y_test)
-print(model.predict(x_test), y_test)
+prediction = model.predict(x_test)
+
+for i in range(len(prediction)):
+    print(np.argmax(prediction[i]), y_test[i])
+
+print(acc)
 
