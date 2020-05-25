@@ -26,12 +26,13 @@ x_train, x_test, y_train, y_test = model_selection.train_test_split(x,y, test_si
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(2))
-model.add(keras.layers.Dense(32,activation="relu"))
+model.add(keras.layers.Dense(16,activation="relu"))
+model.add(keras.layers.Dense(16,activation="relu"))
 model.add(keras.layers.Dense(3, activation="softmax"))
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=2000)
+model.fit(x_train, y_train, epochs=1000)
 
 acc = model.evaluate(x_test, y_test)
 prediction = model.predict(x_test)
